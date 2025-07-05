@@ -1,5 +1,4 @@
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { Link } from 'expo-router';
 import { View, Text } from 'react-native';
 
 export function CustomDrawerContent(props: any) {

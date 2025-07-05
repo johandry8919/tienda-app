@@ -2,19 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-interface Producto {
-  id: number;
-  nombre: string;
-  precio: number;
-  cantidad: number;
-  fecha_registro?: string;
-}
-
 const ListaProductos = () => {
-  const [productos, setProductos] = useState<Producto[]>([]);
+  const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   
   const API_URL = 'https://comunajoven.com.ve/api/listar_productos';
   const TOKEN = '5c0d5fe9-b3ae-4e09-b754-f7bf8f9023ac';
@@ -33,7 +25,7 @@ const ListaProductos = () => {
       const responseText = await response.text();
       const cleanedResponse = responseText.trim();
       
-      let data: { success: boolean; data: Producto[]; timestamp?: string } = { success: false, data: [] };
+      let data = { success: false, data: [] };
       
       if (cleanedResponse) {
         data = JSON.parse(cleanedResponse);
@@ -58,8 +50,7 @@ const ListaProductos = () => {
     fetchProductos();
   }, []);
 
-  const handleEditar = (producto: Producto) => {
-    // Navegar a pantalla de edición o mostrar modal
+  const handleEditar = (producto) => {
     Alert.alert(
       'Editar Producto',
       `¿Deseas editar ${producto.nombre}?`,
@@ -70,7 +61,7 @@ const ListaProductos = () => {
     );
   };
 
-  const handleEliminar = (id: number, nombre: string) => {
+  const handleEliminar = (id, nombre) => {
     Alert.alert(
       'Eliminar Producto',
       `¿Estás seguro de eliminar ${nombre}?`,
@@ -85,22 +76,17 @@ const ListaProductos = () => {
     );
   };
 
-  const editarProducto = async (id: number) => {
+  const editarProducto = async (id) => {
     try {
-      // Aquí implementar la lógica para editar
-      // Ejemplo: navegar a pantalla de edición con el ID
       console.log('Editar producto con ID:', id);
-      // await fetch(`URL_EDITAR/${id}`, { method: 'PUT', ... });
-      // fetchProductos(); // Recargar lista después de editar
     } catch (error) {
       console.error('Error al editar:', error);
     }
   };
 
-  const eliminarProducto = async (id: number) => {
+  const eliminarProducto = async (id) => {
     try {
-      // Simulación de eliminación
-      const response = await fetch(`https://comunajoven.com.ve/api/eliminar_producto/${id}`, {
+      const response = await fetch(`https://comunajoven.com.ve/api/eliminar_producto/?id=${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${TOKEN}`,
@@ -110,7 +96,7 @@ const ListaProductos = () => {
 
       if (response.ok) {
         Alert.alert('Éxito', 'Producto eliminado correctamente');
-        fetchProductos(); // Actualizar lista
+        fetchProductos();
       } else {
         throw new Error('Error al eliminar');
       }
@@ -125,7 +111,7 @@ const ListaProductos = () => {
     fetchProductos();
   };
 
-  const renderItem = ({ item }: { item: Producto }) => (
+  const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <View style={styles.productHeader}>
         <Text style={styles.productName}>{item.nombre}</Text>
@@ -185,7 +171,7 @@ const ListaProductos = () => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onPress={onRefresh}
+            onRefresh={onRefresh}
             colors={['#0000ff']}
             tintColor="#0000ff"
           />

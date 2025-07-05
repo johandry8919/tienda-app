@@ -84,7 +84,7 @@ const CrearProducto = () => {
       
       <TextInput
         style={styles.input}
-        placeholder="Precio"
+        placeholder="Precio por unida $"
         value={precio}
         onChangeText={setPrecio}
         keyboardType="decimal-pad"
