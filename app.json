@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "tienda-app",
-    "slug": "tienda-app",
+    "name": "El Bodegóon Del yoa",
+    "slug": "El Bodegon",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "tiendaapp",
+    "scheme": "ElBodegon",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.johandry89.ElBodegon"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "90c9d3ea-4d10-4616-b66a-a112d6a1936e"
+      }
+    },
+    "owner": "johandry89"
   }
 }
