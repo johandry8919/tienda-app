@@ -50,9 +50,6 @@ const CrearProducto = () => {
       }
 
       const responseText = await response.text();
-
-
-      console.log(responseText)
       let data = {};
       
   
@@ -118,7 +115,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
