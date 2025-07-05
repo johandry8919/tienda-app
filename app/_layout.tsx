@@ -1,29 +1,41 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Drawer } from 'expo-router/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Drawer>
+        <Drawer.Screen
+          name="index" // Corresponde a app/index.tsx
+          options={{
+            title: 'Inicio', // Título en el Drawer
+            drawerLabel: 'Página Principal', // Texto en el menú
+          }}
+        />
+
+        <Drawer.Screen
+          name="crear-productos" // Corresponde a app/index.tsx
+          options={{
+            title: 'crear productos', // Título en el Drawer
+            drawerLabel: 'Nuevo Producto', // Texto en el menú
+          }}
+        />
+        <Drawer.Screen
+          name="ListarProductos" // Corresponde a app/index.tsx
+          options={{
+            title: 'Editar productos', // Título en el Drawer
+            drawerLabel: 'Editar productos', // Texto en el menú
+          }}
+        />
+        {/* Otras pantallas del Drawer */}
+        <Drawer.Screen
+          name="about"
+          options={{
+            title: 'Acerca de',
+            drawerLabel: 'Información'
+          }}
+        />
+      </Drawer>
+    </GestureHandlerRootView>
   );
 }
