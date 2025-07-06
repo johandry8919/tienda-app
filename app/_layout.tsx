@@ -10,6 +10,7 @@ export default function RootLayout() {
           options={{
             title: 'Inicio', // Título en el Drawer
             drawerLabel: 'Página Principal', // Texto en el menú
+            
           }}
         />
 
