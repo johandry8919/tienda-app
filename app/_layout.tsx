@@ -32,8 +32,8 @@ export default function RootLayout() {
         <Drawer.Screen
           name="product_vendido" // Corresponde a app/index.tsx
           options={{
-            title: 'Producto Vendidos', // Título en el Drawer
-            drawerLabel: 'Producto Vendidos', // Texto en el menú
+            title: 'Ganacias', // Título en el Drawer
+            drawerLabel: 'Ganacias', // Texto en el menú
           }}
         />
         {/* Otras pantallas del Drawer */}
