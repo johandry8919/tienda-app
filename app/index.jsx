@@ -111,7 +111,7 @@ export default function Home() {
     } 
   }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.productName}>{nombre}</Text>
+      <Text style={styles.productName}>{nombre} </Text>
       <Text style={styles.categoryText}>Categoría: {categoria || 'Sin categoría'}</Text>
       <View style={styles.detailsRow}>
         <Text style={styles.detailText}>Precio: ${precio.toLocaleString('es-VE')} (Costo BS {parseInt(precio * (tasav || 0))})</Text>
