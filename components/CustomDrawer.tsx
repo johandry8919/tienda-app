@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { useAuth } from '../app/hooks/useAuth';
+import { useAuth } from '../app/(hooks)/useAuth';
 
 export default function CustomDrawer(props: any) {
   const { session, signOut } = useAuth();

@@ -204,6 +204,12 @@ const CrearProducto = () => {
           `Precio calculado con ${formData.ganancia}% de ganancia` : 
           'Precio calculado sin ganancia (solo costo)'}
       </Text>
+
+      <Text style={styles.helpText}>
+        {formData.ganancia ? 
+          `Precio de venta  ${formData.precio}` : 
+          'Precio calculado sin ganancia (solo costo)'}
+      </Text>
       
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />

@@ -1,43 +1,19 @@
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useAuth } from './hooks/useAuth';
-import { ActivityIndicator, View } from 'react-native';
-import { Stack } from 'expo-router';
-import CustomDrawer from '../components/CustomDrawer';
+
 
 export default function RootLayout() {
-  const { session, loading } = useAuth();
+ 
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (!session) {
-    return (
-      <Stack>
-        <Stack.Screen 
-          name="login" 
-          options={{ 
-            headerShown: false,
-            animationTypeForReplace: session ? 'push' : 'pop'
-          }} 
-        />
-      </Stack>
-    );
-  }
-
+ 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
-        drawerContent={(props) => <CustomDrawer {...props} />}
+        
         screenOptions={{
           headerShown: true,
-          swipeEnabled: true,
-          headerTitleAlign: 'center',
+          swipeEnabled: false,
+          
         }}
       >
         <Drawer.Screen
