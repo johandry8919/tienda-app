@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, ActivityIndicator, StyleSheet} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, Alert, ActivityIndicator, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 const CrearProducto = () => {
@@ -8,7 +8,10 @@ const CrearProducto = () => {
     categoria: '',
     nombre: '',
     precio: '',
-    cantidad: ''
+    cantidad: '',
+    costo_unitario: '',
+    inversion:'',
+    ganancia: '30' // Valor por defecto del 30%
   });
   const [loading, setLoading] = useState(false);
 
@@ -17,11 +20,32 @@ const CrearProducto = () => {
     { label: 'Seleccione una categoría', value: '' },
     { label: 'Electrónica', value: 'electronica' },
     { label: 'Ropa', value: 'ropa' },
-    { label: 'Alimentos', value: 'alimentos🍪' },
-    { label: 'Hogar', value: 'hogar🏘️' },
-    { label: 'Helados', value: 'Helados🍦' },
-    { label: 'Producto de limpieza', value: 'Producto de limpieza🧃' }
+    { label: 'Alimentos🍪', value: 'alimentos🍪' },
+    { label: 'Hogar🏘️', value: 'hogar🏘️' },
+    { label: 'Helados🍦', value: 'Helados🍦' },
+    { label: 'Producto de limpieza🧃', value: 'Producto de limpieza🧃' }
   ];
+
+  // Calcular precio automáticamente cuando cambia la inversión o cantidad
+  useEffect(() => {
+    if (formData.costo_unitario && formData.cantidad) {
+      const costo_unitarioNum = parseFloat(formData.costo_unitario);
+      const cantidadNum = parseInt(formData.cantidad);
+      const gananciaPorcentaje = formData.ganancia ? parseFloat(formData.ganancia) : 0;
+
+      if (!isNaN(costo_unitarioNum) && !isNaN(cantidadNum) && cantidadNum > 0) {
+        const costoPorUnidad = costo_unitarioNum / cantidadNum;
+        const precioFinal = gananciaPorcentaje ? 
+          costoPorUnidad * (1 + gananciaPorcentaje / 100) : 
+          costoPorUnidad;
+        
+        setFormData(prev => ({
+          ...prev,
+          precio: precioFinal.toFixed(2)
+        }));
+      }
+    }
+  }, [formData.costo_unitario, formData.cantidad, formData.ganancia]);
 
   // Manejar cambios en los inputs
   const handleChange = (name, value) => {
@@ -33,18 +57,23 @@ const CrearProducto = () => {
 
   // Validar el formulario
   const validateForm = () => {
-    if (!formData.nombre || !formData.precio || !formData.cantidad || !formData.categoria) {
+    if (!formData.nombre || !formData.precio || !formData.cantidad || !formData.categoria || !formData.costo_unitario) {
       Alert.alert('Error', 'Por favor complete todos los campos');
       return false;
     }
 
-    if (isNaN(parseFloat(formData.precio))) {
-      Alert.alert('Error', 'El precio debe ser un número válido');
+    if (isNaN(parseFloat(formData.precio)) || parseFloat(formData.precio) <= 0) {
+      Alert.alert('Error', 'El precio debe ser un número válido y mayor a cero');
       return false;
     }
 
-    if (isNaN(parseInt(formData.cantidad))) {
-      Alert.alert('Error', 'La cantidad debe ser un número válido');
+    if (isNaN(parseInt(formData.cantidad)) || parseInt(formData.cantidad) <= 0) {
+      Alert.alert('Error', 'La cantidad debe ser un número válido y mayor a cero');
+      return false;
+    }
+
+    if (isNaN(parseFloat(formData.costo_unitario)) || parseFloat(formData.costo_unitario) <= 0) {
+      Alert.alert('Error', 'La inversión debe ser un número válido y mayor a cero');
       return false;
     }
 
@@ -59,7 +88,7 @@ const CrearProducto = () => {
 
     try {
       const token = '5c0d5fe9-b3ae-4e09-b754-f7bf8f9023ac';
-      const url = `https://comunajoven.com.ve/api/registro_product?nombre=${encodeURIComponent(formData.nombre)}&precio=${formData.precio}&cantidad=${formData.cantidad}&categoria=${formData.categoria}`;
+      const url = `https://comunajoven.com.ve/api/registro_product?nombre=${encodeURIComponent(formData.nombre)}&precio=${formData.precio}&cantidad=${formData.cantidad}&categoria=${formData.categoria}&inversion=${formData.inversion}`;
       
       const response = await fetch(url, {
         method: 'GET',
@@ -89,7 +118,10 @@ const CrearProducto = () => {
           categoria: '',
           nombre: '',
           precio: '',
-          cantidad: ''
+          cantidad: '',
+          costo_unitario: '',
+          inversion: '',
+          ganancia: '30' // Restablecer al valor por defecto
         });
       } else {
         Alert.alert('Error', 'Error al registrar el producto');
@@ -126,6 +158,37 @@ const CrearProducto = () => {
         onChangeText={(text) => handleChange('nombre', text)}
         autoCapitalize="words"
       />
+  
+      <TextInput
+        style={styles.input}
+        placeholder="Costo total de los productos $"
+        value={formData.costo_unitario}
+        onChangeText={(text) => handleChange('costo_unitario', text)}
+        keyboardType="decimal-pad"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="inversion $"
+        value={formData.inversion}
+        onChangeText={(text) => handleChange('inversion', text)}
+        keyboardType="decimal-pad"
+      />
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Cantidad de unidades"
+        value={formData.cantidad}
+        onChangeText={(text) => handleChange('cantidad', text)}
+        keyboardType="numeric"
+      />
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Porcentaje de ganancia (ej. 30) - Opcional"
+        value={formData.ganancia}
+        onChangeText={(text) => handleChange('ganancia', text)}
+        keyboardType="decimal-pad"
+      />
       
       <TextInput
         style={styles.input}
@@ -133,15 +196,14 @@ const CrearProducto = () => {
         value={formData.precio}
         onChangeText={(text) => handleChange('precio', text)}
         keyboardType="decimal-pad"
+        editable={false}
       />
       
-      <TextInput
-        style={styles.input}
-        placeholder="Cantidad"
-        value={formData.cantidad}
-        onChangeText={(text) => handleChange('cantidad', text)}
-        keyboardType="numeric"
-      />
+      <Text style={styles.helpText}>
+        {formData.ganancia ? 
+          `Precio calculado con ${formData.ganancia}% de ganancia` : 
+          'Precio calculado sin ganancia (solo costo)'}
+      </Text>
       
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
@@ -188,9 +250,11 @@ const styles = StyleSheet.create({
     color: '#000000',
     backgroundColor: '#ffffff',
   },
-  pickerItem: {
-    fontSize: 16,
-    color: '#000000',
+  helpText: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

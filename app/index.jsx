@@ -40,22 +40,29 @@ export default function Home() {
     fetchProductos();
   }, [fetchProductos]);
 
+
+
+
   // Calcular resumen de ventas por categoría
   const getSalesSummary = () => {
     const summary = {};
     
     productos.forEach(item => {
+
+      
       const category = item.categoria || 'Sin categoría';
       if (!summary[category]) {
         summary[category] = {
           totalVendido: 0,
           gananciaUSD: 0,
-          gananciaBS: 0
+          gananciaBS: 0,
+          inversionUSD:0
         };
       }
       summary[category].totalVendido += item.total_vendido || 0;
       summary[category].gananciaUSD += (item.precio * (item.total_vendido || 0));
       summary[category].gananciaBS += (item.precio * (item.total_vendido || 0) * (tasav || 0));
+      summary[category].inversionUSD = (item.inversion);
     });
     
     return summary;
@@ -75,7 +82,6 @@ export default function Home() {
           onPress: () => {
             produ_vendido(id, precio);
             onRefresh();
-            Alert.alert('Producto vendido con éxito');
           }
         }
       ]
@@ -107,7 +113,8 @@ export default function Home() {
       cantidad,
       fecha_registro,
       total_vendido,
-      categoria
+      categoria,
+      inversion
     } 
   }) => (
     <View style={styles.itemContainer}>
@@ -168,10 +175,14 @@ export default function Home() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.summaryContainer}>
         {Object.entries(salesSummary).map(([category, data]) => (
           <View key={category} style={styles.summaryCard}>
+         
             <Text style={styles.summaryCategory}>{category}</Text>
             <Text style={styles.summaryText}>Vendidos: {data.totalVendido}</Text>
-            <Text style={styles.summaryText}>Ganancia $: {data.gananciaUSD.toFixed(2)}</Text>
-            <Text style={styles.summaryText}>Ganancia BS: {Math.round(data.gananciaBS)}</Text>
+            <Text style={styles.summaryText}>Total vendido $: {( data.gananciaUSD.toFixed(2))}</Text>
+            <Text style={styles.summaryText}>Inversion $: {data.inversionUSD}</Text>
+            <Text  style={[styles.summaryText, { color: '#27ae60' }]}>Ganacias $: {( data.gananciaUSD - data.inversionUSD <=0? 'En proseso .. ' : data.gananciaUSD - data.inversionUSD   )}</Text>
+            
+            {/* <Text style={styles.summaryText}>Ganancia BS: {Math.round(data.gananciaBS)}</Text> */}
           </View>
         ))}
       </ScrollView>
@@ -319,10 +330,10 @@ const styles = StyleSheet.create({
   },
   summaryCard: {
     backgroundColor: '#ffffff',
-    padding: 15,
+    padding: 10,
     borderRadius: 8,
     marginRight: 10,
-   
+   height:200,
     minWidth: 150,
     elevation: 2,
     shadowColor: '#000',
