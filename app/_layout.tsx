@@ -1,42 +1,73 @@
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useAuth } from './hooks/useAuth';
+import { ActivityIndicator, View } from 'react-native';
+import { Stack } from 'expo-router';
+import CustomDrawer from '../components/CustomDrawer';
 
 export default function RootLayout() {
+  const { session, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (!session) {
+    return (
+      <Stack>
+        <Stack.Screen 
+          name="login" 
+          options={{ 
+            headerShown: false,
+            animationTypeForReplace: session ? 'push' : 'pop'
+          }} 
+        />
+      </Stack>
+    );
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer>
+      <Drawer
+        drawerContent={(props) => <CustomDrawer {...props} />}
+        screenOptions={{
+          headerShown: true,
+          swipeEnabled: true,
+          headerTitleAlign: 'center',
+        }}
+      >
         <Drawer.Screen
-          name="index" // Corresponde a app/index.tsx
+          name="index"
           options={{
-            title: 'Inicio', // Título en el Drawer
-            drawerLabel: 'Página Principal', // Texto en el menú
-            
-          }}
-        />
-
-        <Drawer.Screen
-          name="crear-productos" // Corresponde a app/index.tsx
-          options={{
-            title: 'crear productos', // Título en el Drawer
-            drawerLabel: 'Nuevo Producto', // Texto en el menú
+            title: 'Inicio',
+            drawerLabel: 'Página Principal',
           }}
         />
         <Drawer.Screen
-          name="ListarProductos" // Corresponde a app/index.tsx
+          name="crear-productos"
           options={{
-            title: 'Editar productos', // Título en el Drawer
-            drawerLabel: 'Editar productos', // Texto en el menú
+            title: 'crear productos',
+            drawerLabel: 'Nuevo Producto',
           }}
         />
-
         <Drawer.Screen
-          name="product_vendido" // Corresponde a app/index.tsx
+          name="ListarProductos"
           options={{
-            title: 'Ganacias', // Título en el Drawer
-            drawerLabel: 'Ganacias', // Texto en el menú
+            title: 'Editar productos',
+            drawerLabel: 'Editar productos',
           }}
         />
-        {/* Otras pantallas del Drawer */}
+        <Drawer.Screen
+          name="product_vendido"
+          options={{
+            title: 'Ganacias',
+            drawerLabel: 'Ganacias',
+          }}
+        />
         <Drawer.Screen
           name="about"
           options={{
@@ -44,6 +75,7 @@ export default function RootLayout() {
             drawerLabel: 'Información'
           }}
         />
+        
       </Drawer>
     </GestureHandlerRootView>
   );
